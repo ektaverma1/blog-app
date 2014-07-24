@@ -13,8 +13,10 @@ gem 'sass-rails', '~> 4.0.2'
 gem 'uglifier', '>= 1.3.0'
 
 group :development do
-gem 'mysql2'
+	gem 'mysql2'
+	gem 'rspec-rails', '~> 3.0.0'
 end
+
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
 

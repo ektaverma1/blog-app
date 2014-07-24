@@ -23,3 +23,8 @@ production:
   database: blogger_prod
   pool: 5
   timeout: 5000
+test:
+  adapter: mysql2
+  database: blogger_test
+  pool: 5
+  timeout: 5000
