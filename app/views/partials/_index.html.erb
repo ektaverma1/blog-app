@@ -1,0 +1,5 @@
+<%= form_tag(calculator_path, method: "put") do %>
+  <%= label_tag(:command, "Input:") %>
+  <%= text_field_tag(:command) %>
+  <%= submit_tag("Calculate") %>
+<% end %>
