@@ -1,7 +1,21 @@
+ /*
+no dom lookup anywhere except constructor
+no anonymous function
+no method calls in constructor
+pull out methods for anything
+*/
+
+//using observer pattern in jquery 
+//car c1 = new cal()
+//var c2 = new cal()
+//c1.registerObserver(c2)
+//c2.registerObserver(c1)
+
 
 $(document).ready(function(	){
 	var newcalculator= new calculator("#calculator");
 	var newcalculator1= new calculator("#calculator1");
+	var newcalculator2 = new calculator("#calculator2");
 });
 
 var calculator =function(viewId)
@@ -39,9 +53,11 @@ calculator.prototype = {
 
 	observeButton: function(){
 		var self = this;
-		self.submitButtonElement.click(function(){
-			self.calculate();			
-		});
+		// self.submitButtonElement.click(function(){
+		// 	self.calculate();			
+		// });
+ 		//using bind method for the same implementation
+		self.submitButtonElement.click(_.bind(this.calculate,this));
 	},
 	calculate: function(){
 		var loadUrl='http://localhost:3000/api/calculator';
