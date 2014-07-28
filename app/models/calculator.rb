@@ -1,7 +1,7 @@
 class Calculator < ActiveRecord::Base
  def +(value)
     self.state=self.state+ value
-    self.save!
+    va=self.save!
     self.state
  end
 

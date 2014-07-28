@@ -9,8 +9,8 @@ BlogApp::Application.routes.draw do
   # Example of regular route:
    put 'calculator' => 'calculator#update'
    namespace :api do 
-    put 'calculator' => 'calculator#update'
-    post 'calculator' => 'calculator#create'
+    post 'calculator' => 'calculator#update'
+    #post 'calculator' => 'calculator#create'
    end
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
