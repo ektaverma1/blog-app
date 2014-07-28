@@ -1,13 +1,17 @@
 
-$(document).ready(function(viewId){
-	 var newcalculator= new calculator("#command");
+$(document).ready(function(	){
+	 var newcalculator= new calculator("#calculator");
 	 newcalculator.cal_api();
+	 	 var newcalculator1= new calculator("#calculator1");
+	 newcalculator1.cal_api();
 });
 
-var calculator =function(stack)
+var calculator =function(viewId)
 {
-	this.command = $('#command')
-	this.button = $('#sub')
+	this.viewElement = $(viewId);
+   this.commandElement = this.viewElement.find("#command");
+   this.submitButtonElement = this.viewElement.find("#sub");
+   this.resultElement = this.viewElement.find("#result1");
     var loadUrl='http://localhost:3000/api/calculator';
 	 $.ajax({
              type: 'POST',
@@ -26,9 +30,9 @@ calculator.prototype = {
 
 	cal_api :function() {
 		var self = this;
-		this.button.click(function(){
+		self.submitButtonElement.click(function(){
         var loadUrl='http://localhost:3000/api/calculator';
-		cmd=self.command.val();
+		cmd=self.commandElement.val();
 		console.log(cmd)
         
 		$.ajax({
@@ -37,7 +41,7 @@ calculator.prototype = {
 		   type :'PUT',
 		   success: function(anotherResult){
 		   	alert(command);
-               self.resultstring(anotherResult.state,command); 
+               self.resultstring(anotherResult.state,cmd,self); 
            },
            error: function(result){
   	         alert(JSON.stringify(result));
