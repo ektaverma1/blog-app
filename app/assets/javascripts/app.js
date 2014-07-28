@@ -1,59 +1,71 @@
 
 $(document).ready(function(	){
-	 var newcalculator= new calculator("#calculator");
-	 newcalculator.cal_api();
-	 	 var newcalculator1= new calculator("#calculator1");
-	 newcalculator1.cal_api();
+	var newcalculator= new calculator("#calculator");
+	var newcalculator1= new calculator("#calculator1");
 });
 
 var calculator =function(viewId)
 {
 	this.viewElement = $(viewId);
-   this.commandElement = this.viewElement.find("#command");
-   this.submitButtonElement = this.viewElement.find("#sub");
-   this.resultElement = this.viewElement.find("#result1");
-    var loadUrl='http://localhost:3000/api/calculator';
-	 $.ajax({
-             type: 'POST',
-            dataType: 'json',
-            url: loadUrl,
-            success: function(anotherResult){
-             alert("success");
-            },
-             error: function(result){
-  	         alert(JSON.stringify(result));
-           }
-       });
-
+	this.commandElement = this.viewElement.find("#command");
+	this.submitButtonElement = this.viewElement.find("#sub");
+	this.resultElement = $("#result");
+	this.initialize();
 }
 calculator.prototype = {
+	initialize: function(){
+		this.create();
+		this.cal_api();
+	},
+	create : function(){
+		var loadUrl='http://localhost:3000/api/calculator';
+		$.ajax({
+			type: 'POST',
+			dataType: 'json',
+			url: loadUrl,
+			success: function(anotherResult){
+				console.log("success");
+			},
+			error: function(result){
+				console.log(JSON.stringify(result));
+			}
+		});
 
+	},
 	cal_api :function() {
 		var self = this;
-		self.submitButtonElement.click(function(){
-        var loadUrl='http://localhost:3000/api/calculator';
-		cmd=self.commandElement.val();
-		console.log(cmd)
-        
-		$.ajax({
-			url:loadUrl,
-		   data:{command:cmd},
-		   type :'PUT',
-		   success: function(anotherResult){
-		   	alert(command);
-               self.resultstring(anotherResult.state,cmd,self); 
-           },
-           error: function(result){
-  	         alert(JSON.stringify(result));
-           }
-        });
-	
-	});
-},
+		self.observeButton();
+	},
 
-resultstring :function(state,command)
-{
-	$('#result').append("OutPut of Command " + command + " is " + state);
-}
+	observeButton: function(){
+		var self = this;
+		self.submitButtonElement.click(function(){
+			self.calculate();			
+		});
+	},
+	calculate: function(){
+		var loadUrl='http://localhost:3000/api/calculator';
+			cmd=this.commandElement.val();
+			console.log(cmd)
+			var self = this;
+			$.ajax({
+				url:loadUrl,
+				data:{command:cmd},
+				type :'PUT',
+				success: function(anotherResult){
+					console.log(cmd);
+					self.resultstring(anotherResult.state,cmd,self); 
+				},
+				error: function(result){
+					console.log(JSON.stringify(result));
+				}
+			});
+
+	},
+
+	resultstring :function(state,command)
+	{
+		this.resultElement.append("<div>OutPut of Command " + command + " is " + state+'</div>');
+	}
 
 }
