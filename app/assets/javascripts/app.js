@@ -1,22 +1,31 @@
 
-// in oberserver pattern we do following
-// observer/register
-// notify
-// handle
-
 $(document).ready(function(){
-	var cal1 = new Calculator("#calculator1");
-	var cal2 =new Calculator("#calculator2");
-	cal1.registerObservers(cal2);
-	cal2.registerObservers(cal1);
+// var cal1 = new Calculator(".calculator");
+// var cal2 =new Calculator("#calculator2");
+// cal1.registerObservers(cal2);
+// cal2.registerObservers(cal1);
+var calculators = []
+$("#gen_cal").click(function(){
+	var cal1 = new Calculator('#template #calculator1');
+	for(i=0;i<calculators.length;i++){
+		cal1.registerObservers(calculators[i]);
+		calculators[i].registerObservers(cal1);
+	}
+	calculators.push(cal1);
+});
 });
 
 var Calculator = function(viewid){
-	this.command = $(viewid).find('.command');
-	this.result = $(viewid).find(".result");
-	this.button = $(viewid).find(".sub");
+
+	this.viewElement=$(viewid).clone().appendTo( "#container" );
+	console.log(viewid);
+	this.command = this.viewElement.find('#command');
+	this.result = this.viewElement.find("#result");
+	this.button = this.viewElement.find("#sub");
 	this.initialize();
 	this.observers = $({});
+
+	console.log(this.result)
 }
 
 Calculator.prototype = {
@@ -58,7 +67,7 @@ Calculator.prototype = {
 	},
 	registerObservers: function(otherCalculator){
 		var self =this
-    // this.observers.on("calculator:notiyfy", _.bind(otherCalculator.printResult, otherCalculator));
+    // this.observerls.on("calculator:notiyfy", _.bind(otherCalculator.printResult, otherCalculator));
     self.observers.on("calculator:notify",function(event,result){
     	otherCalculator.printResult(result);
     })
