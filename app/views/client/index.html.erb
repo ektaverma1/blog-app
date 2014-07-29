@@ -1,28 +1,25 @@
-<html>
-<head>
-	<title>
-		consumer api
-	</title>
-</head>
-<body>
-	<h1>Enter the values in the calculator</h1>
-	<div id="calculator">
-		<div id="formdiv">	
-			<input id="command"/>
-			<input type="button" value="Calculate" id="sub"></input>
-			<div id="result"></div>
-		</div>
-		<!-- <div id="result"></div>
- --></div>
-	<div id="calculator1">
-		<div id="formdiv">	
-			<input id="command"/>
-			<input type="button" value="Calculate" id="sub"></input>
-			<div id="result"></div>
-		</div>
+<h1>Enter the values in the calculator</h1>
+
+<div id="calculator1" style="float:left;">
+	<div id="formdiv">
+		<input class="command"/>
+		<input type="button" value="Calculate" class="sub"></input>
 	</div>
-		
+	<div class="resultDiv" style="max-height:300px; overflow:'scroll';">
+		<span class="sp"> Calculator's current state </span>
+		<div class="result"></div>
+	</div>
 
-</body>
+</div>
 
-</html>	
+<div id="calculator2" style="float:right;">
+	<div id="formdiv">
+		<input class="command"/>
+		<input type="button" value="Calculate" class="sub"></input>
+	</div>
+
+	<div class="resultDiv">
+		<span class="sp"> Calculator's current state </span>
+		<div class="result"></div>
+	</div>
+</div>

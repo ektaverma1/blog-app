@@ -1,95 +1,70 @@
- /*
-no dom lookup anywhere except constructor
-no anonymous function
-no method calls in constructor
-pull out methods for anything
-*/
 
-//using observer pattern in jquery 
-//car c1 = new cal()
-//var c2 = new cal()
-//c1.registerObserver(c2)
-//c2.registerObserver(c1)
+// in oberserver pattern we do following
+// observer/register
+// notify
+// handle
 
-
-$(document).ready(function(	){
-	var newcalculator= new calculator("#calculator");
-	var newcalculator1= new calculator("#calculator1");
-	newcalculator.registerObserver(newcalculator1);
-	newcalculator1.registerObserver(newcalculator);
+$(document).ready(function(){
+	var cal1 = new Calculator("#calculator1");
+	var cal2 =new Calculator("#calculator2");
+	cal1.registerObservers(cal2);
+	cal2.registerObservers(cal1);
 });
 
-var calculator =function(viewId)
-{
-	this.viewElement = $(viewId);
-	this.commandElement = this.viewElement.find("#command");
-	this.submitButtonElement = this.viewElement.find("#sub");
-	this.resultElement = this.viewElement.find("#result");
-	this.observers = $({});
+var Calculator = function(viewid){
+	this.command = $(viewid).find('.command');
+	this.result = $(viewid).find(".result");
+	this.button = $(viewid).find(".sub");
 	this.initialize();
+	this.observers = $({});
 }
-calculator.prototype = {
-	initialize: function(){
-		this.create();
-		this.cal_api();
+
+Calculator.prototype = {
+	initialize : function(){
+		this.makeCreateCall();
+		this.calculate();
 	},
-	registerObserver: function(otherCalulator){
-		this.observers.on("calculatorUpdated",_.bind(otherCalulator.calculate,otherCalulator));	
+	calculate : function (){
+		this.observeButton();
 	},
-	notifyObserver: function(result){
-		this.observers.trigger("calculatorUpdated",result);
-	},
-	create : function(){
-		var loadUrl='http://localhost:3000/api/calculator';
+	makeCreateCall: function(type,url){
 		$.ajax({
-			type: 'post',
-			dataType: 'json',
-			url: loadUrl,
-			success: function(anotherResult){
-				console.log("success");
-			},
-			error: function(result){
-				console.log(JSON.stringify(result));
-			}
+			method: 'POST',
+			url:"/api/calculator"
 		});
-
 	},
-	cal_api :function() {
-		var self = this;
-		self.observeButton();
+	printResult: function(result){
+		if(result != '') console.log(result);
+		this.result.append("<div><span>Now </span> "+result['state']+"</div>");
 	},
-
 	observeButton: function(){
 		var self = this;
-		// self.submitButtonElement.click(function(){
-		// 	self.calculate();			
-		// });
- 		//using bind method for the same implementation
-		self.submitButtonElement.click(_.bind(this.calculate,this));
+		this.button.click(_.bind(this.processCalculation, this));
 	},
-	calculate: function(event, data){
-		var loadUrl='http://localhost:3000/api/calculator';
-			cmd=this.commandElement.val();
-			console.log(cmd)
-			var self = this;
-			$.ajax({
-				url:loadUrl,
-				data:{command:cmd},
-				type :'PUT',
-				success: function(anotherResult){
-					console.log(cmd);
-					self.resultstring(anotherResult.state,cmd,self); 
-				},
-				error: function(result){
-					console.log(JSON.stringify(result));
-				}
-			});
-
+	processCalculation: function(){
+		var self = this;
+		$.ajax({
+			method: 'PUT',
+			data: {"command": self.command.val()},
+			url:"/api/calculator",
+			success: function(result){
+				self.printResult(result);
+				self.notifyObservers(result);
+			},
+			error: function(){
+				console.log('network down');
+			}
+		});
 	},
-
-	resultstring :function(state,command)
-	{
-		this.resultElement.append("<div>OutPut of Command " + command + " is " + state+'</div>');
-	}
-
+	registerObservers: function(otherCalculator){
+		var self =this
+    // this.observers.on("calculator:notiyfy", _.bind(otherCalculator.printResult, otherCalculator));
+    self.observers.on("calculator:notify",function(event,result){
+    	otherCalculator.printResult(result);
+    })
+},
+notifyObservers: function(result){
+	var self= this
+	self.observers.trigger("calculator:notify",result);
+}
 }
