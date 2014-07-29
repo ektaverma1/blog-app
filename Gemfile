@@ -14,8 +14,16 @@ gem 'uglifier', '>= 1.3.0'
 
 group :development do
 	gem 'mysql2'
-	gem 'rspec-rails', '~> 3.0.0'
+	#gem 'rspec-rails', '~> 3.0.0'
 end
+
+gem 'jslint_on_rails', group: [:development, :test]
+
+group :test do
+	gem 'simplecov', require: false, group: :test
+	gem 'metric_fu'
+	gem 'rspec-rails'
+end	
 
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'

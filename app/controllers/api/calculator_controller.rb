@@ -1,7 +1,7 @@
 module Api
 	class CalculatorController < ApplicationController 
 	protect_from_forgery	
-	before_action :set_headers
+	#before_action :set_headers
 		def update
 		  calculator=Calculator.first
 		  if calculator
