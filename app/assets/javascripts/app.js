@@ -15,7 +15,8 @@ pull out methods for anything
 $(document).ready(function(	){
 	var newcalculator= new calculator("#calculator");
 	var newcalculator1= new calculator("#calculator1");
-	var newcalculator2 = new calculator("#calculator2");
+	newcalculator.registerObserver(newcalculator1);
+	newcalculator1.registerObserver(newcalculator);
 });
 
 var calculator =function(viewId)
@@ -23,7 +24,8 @@ var calculator =function(viewId)
 	this.viewElement = $(viewId);
 	this.commandElement = this.viewElement.find("#command");
 	this.submitButtonElement = this.viewElement.find("#sub");
-	this.resultElement = $("#result");
+	this.resultElement = this.viewElement.find("#result");
+	this.observers = $({});
 	this.initialize();
 }
 calculator.prototype = {
@@ -31,10 +33,16 @@ calculator.prototype = {
 		this.create();
 		this.cal_api();
 	},
+	registerObserver: function(otherCalulator){
+		this.observers.on("calculatorUpdated",_.bind(otherCalulator.calculate,otherCalulator));	
+	},
+	notifyObserver: function(result){
+		this.observers.trigger("calculatorUpdated",result);
+	},
 	create : function(){
 		var loadUrl='http://localhost:3000/api/calculator';
 		$.ajax({
-			type: 'POST',
+			type: 'post',
 			dataType: 'json',
 			url: loadUrl,
 			success: function(anotherResult){
@@ -59,7 +67,7 @@ calculator.prototype = {
  		//using bind method for the same implementation
 		self.submitButtonElement.click(_.bind(this.calculate,this));
 	},
-	calculate: function(){
+	calculate: function(event, data){
 		var loadUrl='http://localhost:3000/api/calculator';
 			cmd=this.commandElement.val();
 			console.log(cmd)
